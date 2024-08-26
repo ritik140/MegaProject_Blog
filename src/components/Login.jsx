@@ -24,6 +24,8 @@ const Login = () => {
           //Automatically render to the another page
           navigate("/");
         }
+      } else {
+        alert("Please SignUp!");
       }
     } catch (error) {
       setError(error.message);
