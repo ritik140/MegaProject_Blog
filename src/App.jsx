@@ -17,6 +17,7 @@ function App() {
       .getCurrentUser()
       .then((userData) => {
         if (userData) {
+          //Set the State
           dispatch(login({ userData }));
         } else {
           dispatch(logout());
