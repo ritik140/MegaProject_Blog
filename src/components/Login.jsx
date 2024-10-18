@@ -21,61 +21,78 @@ const Login = () => {
         const userData = await authService.getCurrentUser();
         if (userData) {
           dispatch(authLogin(userData));
-          //Automatically render to the another page
-          navigate("/");
+          navigate("/"); // Redirect after login
         }
       }
     } catch (error) {
       setError(error.message);
     }
   };
+
   return (
-    <div className="flex items-center justify-center w-full">
-      <div
-        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
-      >
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full border border-gray-300">
+        {/* Logo Section */}
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
             <Logo width="100%" />
           </span>
         </div>
-        <h2 className="text-center text-2xl font-bold leading-tight">
+
+        {/* Title */}
+        <h2 className="text-center text-2xl font-bold text-gray-800">
           Sign in to your account
         </h2>
-        <p className="mt-2 text-center text-base text-black/60">
-          Don&apos;t have any account?&nbsp;
+
+        {/* Subtitle and Sign Up Link */}
+        <p className="mt-2 text-center text-base text-gray-600">
+          Don&apos;t have an account?&nbsp;
           <Link
             to="/signup"
-            className="font-medium text-primary transition-all duration-200 hover:underline"
+            className="font-medium text-blue-600 hover:underline"
           >
             Sign Up
           </Link>
         </p>
-        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+
+        {/* Error Message */}
+        {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
+
+        {/* Login Form */}
         <form onSubmit={handleSubmit(login)} className="mt-8">
           <div className="space-y-5">
+            {/* Email Input */}
             <Input
-              label="Email: "
+              label="Email"
               placeholder="Enter your email"
               type="email"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600"
               {...register("email", {
                 required: true,
                 validate: {
-                  matchPatern: (value) =>
+                  matchPattern: (value) =>
                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
                     "Email address must be a valid address",
                 },
               })}
             />
+
+            {/* Password Input */}
             <Input
-              label="Password: "
+              label="Password"
               type="password"
               placeholder="Enter your password"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600"
               {...register("password", {
                 required: true,
               })}
             />
-            <Button type="submit" className="w-full">
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700"
+            >
               Sign in
             </Button>
           </div>

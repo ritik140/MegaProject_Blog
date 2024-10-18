@@ -1,12 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, RTE, Select } from "../index";
+import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../Appwrite/Config";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function PostForm({ post }) {
-  const [imageSrc, setImageSrc] = useState("");
   const { register, handleSubmit, watch, setValue, control, getValues } =
     useForm({
       defaultValues: {
@@ -40,13 +39,10 @@ export default function PostForm({ post }) {
       }
     } else {
       const file = await appwriteService.uploadFile(data.image[0]);
-      console.log(file);
 
       if (file) {
         const fileId = file.$id;
         data.featuredImage = fileId;
-        console.log(data.featuredImage);
-
         const dbPost = await appwriteService.createPost({
           ...data,
           userId: userData.$id,
@@ -54,8 +50,6 @@ export default function PostForm({ post }) {
 
         if (dbPost) {
           navigate(`/post/${dbPost.$id}`);
-        } else {
-          console.log("dbpost Not Created");
         }
       }
     }
@@ -82,13 +76,6 @@ export default function PostForm({ post }) {
     return () => subscription.unsubscribe();
   }, [watch, slugTransform, setValue]);
 
-  React.useEffect(() => {
-    appwriteService.getFilePreview(post.featuredImage).then((urlObject) => {
-      // Convert the URL object to a string and set it in state
-      setImageSrc(urlObject.href);
-    });
-  }, [post.featuredImage]);
-
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
       <div className="w-2/3 px-2">
@@ -110,9 +97,9 @@ export default function PostForm({ post }) {
           }}
         />
         <RTE
+          label="Content :"
           name="content"
           control={control}
-          label="Content :"
           defaultValue={getValues("content")}
         />
       </div>
@@ -126,7 +113,11 @@ export default function PostForm({ post }) {
         />
         {post && (
           <div className="w-full mb-4">
-            <img src={imageSrc} alt={post.title} className="rounded-lg" />
+            <img
+              src={appwriteService.getFilePreview(post.featuredImage)}
+              alt={post.title}
+              className="rounded-lg"
+            />
           </div>
         )}
         <Select
